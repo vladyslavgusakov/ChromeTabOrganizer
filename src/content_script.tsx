@@ -1,4 +1,6 @@
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+  console.log("msg received");
+  
   if (msg.color) {
     console.log("Receive color = " + msg.color);
     document.body.style.backgroundColor = msg.color;

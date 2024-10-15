@@ -15,6 +15,11 @@ const Popup = () => {
     });
   }, []);
 
+  const changeCount = () => {
+    console.log("Change count");
+    setCount(count + 1);
+  };
+
   const changeBackground = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tab = tabs[0];
@@ -39,7 +44,7 @@ const Popup = () => {
         <li>Current Time: {new Date().toLocaleTimeString()}</li>
       </ul>
       <button
-        onClick={() => setCount(count + 1)}
+        onClick={changeCount}
         style={{ marginRight: "5px" }}
       >
         count up
