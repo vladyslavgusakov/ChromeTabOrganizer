@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import PrimaryButton from "./PrimaryButton";
 
 const Popup = () => {
   const [count, setCount] = useState(0);
@@ -37,20 +38,30 @@ const Popup = () => {
     });
   };
 
+  const divStyle = {
+    backgroundColor: "lightblue",
+    padding: "20px",
+    borderRadius: "10px",
+  };
+
   return (
-    <>
-      <ul style={{ minWidth: "700px" }}>
-        <li>Current URL: {currentURL}</li>
-        <li>Current Time: {new Date().toLocaleTimeString()}</li>
-      </ul>
-      <button
+    <div style={divStyle}>
+      <title>Tab Organizer</title>
+      <PrimaryButton text="Organize Tabs" onClick={ (e) => { 
+        console.log("Press");
+        changeCount();
+        chrome.runtime.sendMessage({
+          functionName: "exampleFetch",
+          data: {},
+        });
+      }}/>
+      {/* <button
         onClick={changeCount}
         style={{ marginRight: "5px" }}
       >
-        count up
-      </button>
-      <button onClick={changeBackground}>change background</button>
-    </>
+        Organize Tabs
+      </button> */}
+    </div>
   );
 };
 
