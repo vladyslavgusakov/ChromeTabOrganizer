@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+
+  "name": "Tab Organizer",
+  "description": "Organize your tabs with ease!",
+  "version": "3.0",
+
+  "options_ui": {
+    "page": "options.html"
+  },
+
+  "action": {
+    "default_icon": {
+      "16": "img/icon16.png",
+      "48": "img/icon48.png",
+      "128": "img/icon128.png"
+    },
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+      {
+          "matches": ["<all_urls>"],
+          "js": ["js/vendor.js", "js/content_script.js"]
+      }
+  ],
+
+  "background": {
+    "service_worker": "js/background.js"
+  },
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "tabGroups"
+  ],
+
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
