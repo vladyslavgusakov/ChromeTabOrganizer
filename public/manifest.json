@@ -30,7 +30,9 @@
   },
 
   "permissions": [
-    "storage"
+    "storage",
+    "tabs",
+    "tabGroups"
   ],
 
   "host_permissions": [

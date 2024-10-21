@@ -47,13 +47,14 @@ const Popup = () => {
   return (
     <div style={divStyle}>
       <title>Tab Organizer</title>
-      <PrimaryButton text="Organize Tabs" onClick={ (e) => { 
+      <PrimaryButton text="Close duplicate tabs" onClick={ (e) => { 
         console.log("Press");
         changeCount();
         chrome.runtime.sendMessage({
           functionName: "exampleFetch",
           data: {},
         });
+        closeDuplicateTabs()
       }}/>
       {/* <button
         onClick={changeCount}
@@ -72,3 +73,55 @@ root.render(
     <Popup />
   </React.StrictMode>
 );
+
+async function closeDuplicateTabs(): Promise<void> {
+  // Step 1: Query all open tabs
+  const allTabs = await new Promise<chrome.tabs.Tab[]>((resolve, reject) => {
+    chrome.tabs.query({}, (tabs) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(tabs);
+      }
+    });
+  });
+
+  // Step 2: Detect duplicates by URL
+  const uniqueTabs = new Map<string, chrome.tabs.Tab>(); // URL as key and a tab as value
+
+  for (const tab of allTabs) {
+    if (tab.url) {
+      if (uniqueTabs.has(tab.url)) {
+        // Found a duplicate
+        const originalTab = uniqueTabs.get(tab.url);
+        if (originalTab) {
+          // Keep the first occurrence and close subsequent duplicates
+          await closeTab(tab.id);
+        }
+      } else {
+        // Add the tab to the map if it's unique
+        uniqueTabs.set(tab.url, tab);
+      }
+    }
+  }
+
+  console.log('Duplicate tabs closed successfully');
+}
+
+// Helper function to close a tab by its ID
+async function closeTab(tabId?: number): Promise<void> {
+  if (tabId === undefined) return;
+
+  return new Promise((resolve, reject) => {
+    chrome.tabs.remove(tabId, () => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+// Example function call to close duplicate tabs
+// closeDuplicateTabs().catch((error) => console.error('Error closing duplicate tabs:', error));
